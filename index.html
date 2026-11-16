@@ -1,39 +1,14 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="在浏览器里批量批改电子答卷，复核主观题并导出成绩。">
-<link rel="icon" href="data:,"><title>阅卷台 · 批量批改电子答卷</title>
+<meta http-equiv="refresh" content="0; url=https://paper-grade-workbench.heapedgrebe8.chatgpt.site/">
+<title>阅卷台</title>
 <link rel="stylesheet" href="./style.css">
-<script type="module" src="./app.js"></script>
-</head>
-<body>
-<header><div class="brand"><span aria-hidden="true">✓</span> 阅卷台</div><span class="privacy">数据仅在当前浏览器处理</span></header>
 <main>
-<section class="intro">
-<h1>批量批改电子答卷</h1>
-<p>导入标准答案和学生作答，自动批改客观题，再复核主观题并导出成绩。</p>
-</section>
-<form id="form">
-<div class="panels">
-<section class="panel"><h2><label for="key">标准答案</label></h2>
-<p id="key-help">填写题号、题型、答案和分值。填空题可用 | 分隔多个正确答案。</p>
-<textarea id="key" spellcheck="false" aria-describedby="key-help" placeholder="题号,题型,答案,分值&#10;1,单选,A,2"></textarea>
-<div class="file-row"><label>导入答案 CSV<input type="file" data-target="key" accept=".csv,text/csv"></label><button type="button" data-template="key">下载模板</button></div>
-</section>
-<section class="panel"><h2><label for="answers">学生答卷</label></h2>
-<p id="answers-help">首列为姓名，其余列为题号。每位学生占一行。</p>
-<textarea id="answers" spellcheck="false" aria-describedby="answers-help" placeholder="姓名,1&#10;学生甲,A"></textarea>
-<div class="file-row"><label>导入答卷 CSV<input type="file" data-target="answers" accept=".csv,text/csv"></label><button type="button" data-template="answers">下载模板</button></div>
-</section></div>
-<div class="actions"><button class="primary" type="submit">开始批改</button><button id="demo" type="button">载入示例</button></div>
-<p id="status" role="status"></p>
-</form>
-<section id="result" hidden aria-labelledby="result-title">
-<div class="result-head"><div><h2 id="result-title">批改结果</h2><p id="summary" aria-live="polite"></p></div><button id="export" type="button">导出成绩 CSV</button></div>
-<div class="table-wrap"><table><thead id="head"></thead><tbody id="body"></tbody></table></div>
-</section>
+  <section class="intro">
+    <h1>阅卷台</h1>
+    <p><a href="https://paper-grade-workbench.heapedgrebe8.chatgpt.site/">打开新版阅卷台并登录</a></p>
+  </section>
 </main>
-</body>
 </html>
