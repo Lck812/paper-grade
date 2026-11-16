@@ -1,3 +1,6 @@
+import {keyFromText, rowsFromText, combineAnswers} from './import.js';
+import {extractPdf} from './pdf.js';
+import {startInbox} from './inbox.js';
 import {asCsv, run, total} from './grade.js';
 
 const get = id => document.getElementById(id);
@@ -33,22 +36,52 @@ function download(name, text) {
 }
 
 for (const field of [key, answers]) field.addEventListener('input', clearResult);
+async function fileText(file) {
+  const pdf = /\.pdf$/i.test(file.name);
+  if (file.size > (pdf ? 12_000_000 : 5_000_000)) throw new Error(file.name + ' 超出大小限制。');
+  const bytes = await file.arrayBuffer();
+  if (pdf) return extractPdf(bytes);
+  try { return new TextDecoder('utf-8', {fatal:true}).decode(bytes); }
+  catch { return new TextDecoder('gb18030', {fatal:true}).decode(bytes); }
+}
+
 for (const input of document.querySelectorAll('[data-target]')) {
   input.addEventListener('change', async () => {
-    const file = input.files[0];
-    if (!file) return;
+    const files = Array.from(input.files);
+    if (!files.length) return;
+    input.disabled = true;
+    message('正在读取 ' + files.length + ' 个文件…');
     try {
-      if (file.size > 5_000_000) throw new Error('请将文件拆分至 5 MB 以内。');
-      const bytes = await file.arrayBuffer();
-      if (input.files[0] !== file) return;
-      let content;
-      try { content = new TextDecoder('utf-8', {fatal:true}).decode(bytes); }
-      catch { content = new TextDecoder('gb18030', {fatal:true}).decode(bytes); }
-      get(input.dataset.target).value = content;
+      if (files.length > 30) throw new Error('每次最多上传 30 份答卷。');
+      if (input.dataset.target === 'key') {
+        const parsed = keyFromText(await fileText(files[0]));
+        key.value = parsed.csv;
+        clearResult();
+        message(parsed.inferred
+          ? '已提取答案。请核对题型和分值。' + (parsed.defaultScores ? ' 有 ' + parsed.defaultScores + ' 道题暂设为 1 分。' : '')
+          : '已导入标准答案，请核对内容。');
+        return;
+      }
+      if (files.length === 1 && /\.csv$/i.test(files[0].name)) {
+        if (answers.value.trim() && !confirm('用这个班级 CSV 替换当前编辑区的答卷？')) return;
+        answers.value = await fileText(files[0]);
+      } else {
+        if (files.some(file => /\.csv$/i.test(file.name))) throw new Error('班级 CSV 请单独上传。');
+        if (!key.value.trim()) throw new Error('请先导入标准答案。');
+        const rows = [];
+        for (const file of files) {
+          try { rows.push(rowsFromText(await fileText(file), file.name)); }
+          catch (error) { throw new Error(file.name + '：' + error.message); }
+        }
+        answers.value = combineAnswers(key.value, rows, answers.value);
+      }
       clearResult();
-      message('已导入 ' + file.name);
+      message('已导入 ' + files.length + ' 个答卷文件，请检查内容后开始批改。');
     } catch (error) { message('导入失败。' + error.message, true); }
-    finally { if (input.files[0] === file) input.value = ''; }
+    finally {
+      input.value = '';
+      input.disabled = false;
+    }
   });
 }
 for (const button of document.querySelectorAll('[data-template]')) {
@@ -150,3 +183,14 @@ get('export').addEventListener('click', () => {
   }
   download('阅卷成绩.csv', asCsv(rows));
 });
+
+if (location.pathname === '/grade/') {
+  startInbox({key, answers, onChange:clearResult});
+  document.querySelector('a[href^="/signout-with-chatgpt"]')?.addEventListener('click', event => {
+    if ((key.value.trim() || answers.value.trim()) &&
+        !confirm('退出后当前编辑区内容会清空。确认已导出需要保留的成绩？')) event.preventDefault();
+  });
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) location.reload();
+  });
+}

@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "pdfjs-dist": "6.5.438"
+  },
+  "name": "paper-grade",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/build.mjs",
+    "build:static": "node scripts/build.mjs --static"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

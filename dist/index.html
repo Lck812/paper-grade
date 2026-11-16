@@ -9,23 +9,34 @@
 <script type="module" src="./app.js"></script>
 </head>
 <body>
-<header><div class="brand"><span aria-hidden="true">✓</span> 阅卷台</div><span class="privacy">数据仅在当前浏览器处理</span></header>
+<header><div class="brand"><span aria-hidden="true">✓</span> 阅卷台</div><div class="account"><span class="privacy">文件在浏览器内读取</span><!-- ACCOUNT --></div></header>
 <main>
 <section class="intro">
 <h1>批量批改电子答卷</h1>
 <p>导入标准答案和学生作答，自动批改客观题，再复核主观题并导出成绩。</p>
 </section>
+<section id="inbox" class="panel inbox" hidden aria-labelledby="inbox-label">
+  <div class="result-head"><div><h2 id="inbox-label">在线收卷</h2><p>分享链接让学生提交。在线答卷保存在你的账号下。</p></div><button id="inbox-refresh" type="button">刷新答卷</button></div>
+  <div id="inbox-setup" class="file-row" hidden><input id="inbox-title" aria-label="试卷名称" maxlength="80" placeholder="例如：周五课堂小测"><button id="inbox-create" type="button">用标准答案创建收卷</button></div>
+  <div id="inbox-open" hidden>
+    <p><strong id="collection-name"></strong> · <span id="collection-count"></span></p>
+    <div class="link-row"><input id="collection-link" readonly aria-label="学生提交链接"><button id="inbox-copy" type="button">复制学生链接</button></div>
+    <details><summary>查看已提交学生</summary><ul id="submission-list"></ul></details>
+    <div class="actions"><button id="inbox-load" type="button">载入在线答卷</button><button id="inbox-delete" type="button">删除收卷</button></div>
+  </div>
+  <p id="inbox-status" role="status"></p>
+</section>
 <form id="form">
 <div class="panels">
 <section class="panel"><h2><label for="key">标准答案</label></h2>
-<p id="key-help">填写题号、题型、答案和分值。填空题可用 | 分隔多个正确答案。</p>
+<p id="key-help">上传 CSV、TXT 或文字版 PDF。TXT 和 PDF 可每题一行，如「1. A（2分）」。导入后请核对题型和分值。</p>
 <textarea id="key" spellcheck="false" aria-describedby="key-help" placeholder="题号,题型,答案,分值&#10;1,单选,A,2"></textarea>
-<div class="file-row"><label>导入答案 CSV<input type="file" data-target="key" accept=".csv,text/csv"></label><button type="button" data-template="key">下载模板</button></div>
+<div class="file-row"><label>上传标准答案<input type="file" data-target="key" accept=".csv,.txt,.pdf,text/csv,text/plain,application/pdf"></label><button type="button" data-template="key">下载模板</button></div>
 </section>
 <section class="panel"><h2><label for="answers">学生答卷</label></h2>
-<p id="answers-help">首列为姓名，其余列为题号。每位学生占一行。</p>
+<p id="answers-help">上传班级 CSV，或逐个上传学生的 TXT、文字版 PDF。先导入标准答案，系统会按题号对齐。</p>
 <textarea id="answers" spellcheck="false" aria-describedby="answers-help" placeholder="姓名,1&#10;学生甲,A"></textarea>
-<div class="file-row"><label>导入答卷 CSV<input type="file" data-target="answers" accept=".csv,text/csv"></label><button type="button" data-template="answers">下载模板</button></div>
+<div class="file-row"><label>上传学生答卷<input type="file" data-target="answers" accept=".csv,.txt,.pdf,text/csv,text/plain,application/pdf" multiple></label><button type="button" data-template="answers">下载模板</button></div>
 </section></div>
 <div class="actions"><button class="primary" type="submit">开始批改</button><button id="demo" type="button">载入示例</button></div>
 <p id="status" role="status"></p>

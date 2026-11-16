@@ -1,2 +1,5 @@
 .playwright-cli/
 .openai/
+node_modules/
+dist/server/
+dist/vendor/
