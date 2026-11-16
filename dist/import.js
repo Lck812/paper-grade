@@ -1,4 +1,4 @@
-import {asCsv, parse, run} from './grade.js';
+import {asCsv, parse, parseRubric, run, total} from './grade.js';
 
 const csv = rows => asCsv(rows, false).replace(/^\uFEFF/, '');
 const clean = text => text.normalize('NFKC').trim();
@@ -34,6 +34,11 @@ export function keyFromText(text) {
     const answer = scored ? value.slice(0, scored.index).trim() : value.trim();
     const upper = clean(answer).toUpperCase();
     const choices = upper.replace(/[\s,、;]+/g, '');
+    const rubric = parseRubric(answer);
+    if (rubric) {
+      rows.push([id, '主观', answer, scored ? clean(scored[1]) : total(rubric.map(item => item.points))]);
+      continue;
+    }
     let type = '填空';
     if (!answer) type = '主观';
     else if (/^[A-Z]$/.test(upper)) type = '单选';

@@ -9,7 +9,7 @@ const answers = get('answers');
 const resultPanel = get('result');
 const status = get('status');
 const example = {
-  key: '题号,题型,答案,分值\n1,单选,B,2\n2,多选,AC,3\n3,判断,对,1\n4,填空,北京|北京市,2\n5,主观,说明水循环的主要过程,4',
+  key: '题号,题型,答案,分值\n1,单选,B,2\n2,多选,AC,3\n3,判断,对,1\n4,填空,北京|北京市,2\n5,主观,评分点：2=蒸发|汽化；1=凝结；1=降水|下雨,4',
   answers: '姓名,1,2,3,4,5\n学生甲,B,CA,对,北京市,水蒸发后凝结成云，再降水回到地表。\n学生乙,A,A,对,北京,水从地表蒸发。\n学生丙,B,AC,错,,'
 };
 let result;
@@ -139,15 +139,19 @@ function draw() {
         input.max = String(question.max);
         input.step = '0.01';
         input.placeholder = '待评分';
+        if (mark !== null) input.value = String(mark);
+        const explanation = element('small', student.explanations[index], 'detail grade-reason');
         input.setAttribute('aria-label', student.name + '第 ' + question.id + ' 题得分，满分 ' + question.max);
         input.addEventListener('input', () => {
           student.marks[index] = input.value !== '' && input.validity.valid ? input.valueAsNumber : null;
           input.setAttribute('aria-invalid', String(!input.validity.valid));
+          explanation.textContent = student.marks[index] === null
+            ? '待复核。' : '人工复核后给分。';
           updateScore(score, student.marks);
           updateSummary();
         });
         input.addEventListener('change', () => input.reportValidity());
-        cell.append(input);
+        cell.append(input, explanation);
       } else cell.append(element('strong', mark + ' / ' + question.max, mark ? '' : 'miss'));
       row.append(cell);
     });

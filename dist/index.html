@@ -13,7 +13,7 @@
 <main>
 <section class="intro">
 <h1>批量批改电子答卷</h1>
-<p>导入标准答案和学生作答，自动批改客观题，再复核主观题并导出成绩。</p>
+<p>导入标准答案和学生作答，自动批改客观题和已设置评分点的主观题，再导出成绩。</p>
 </section>
 <section id="inbox" class="panel inbox" hidden aria-labelledby="inbox-label">
   <div class="result-head"><div><h2 id="inbox-label">在线收卷</h2><p>分享链接让学生提交。在线答卷保存在你的账号下。</p></div><button id="inbox-refresh" type="button">刷新答卷</button></div>
@@ -31,6 +31,9 @@
 <section class="panel"><h2><label for="key">标准答案</label></h2>
 <p id="key-help">上传 CSV、TXT 或文字版 PDF。TXT 和 PDF 可每题一行，如「1. A（2分）」。导入后请核对题型和分值。</p>
 <textarea id="key" spellcheck="false" aria-describedby="key-help" placeholder="题号,题型,答案,分值&#10;1,单选,A,2"></textarea>
+<details class="rubric-help"><summary>怎样设置主观题评分点？</summary>
+<p>题型选「主观」，在答案栏填写 <code>评分点：2=蒸发|汽化；1=凝结；1=降水|下雨</code>。各点分值之和应等于该题满分。TXT 或 PDF 也可以写成一行，例如「5. 评分点：2=蒸发|汽化；1=凝结；1=降水|下雨」。</p>
+</details>
 <div class="file-row"><label>上传标准答案<input type="file" data-target="key" accept=".csv,.txt,.pdf,text/csv,text/plain,application/pdf"></label><button type="button" data-template="key">下载模板</button></div>
 </section>
 <section class="panel"><h2><label for="answers">学生答卷</label></h2>

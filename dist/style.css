@@ -50,3 +50,6 @@ td input { width: 82px; margin-top: 5px; border: 1px solid #a7bcb2; border-radiu
 #student-questions label { display: block; }
 #student-questions textarea { min-height: 64px; margin: 5px 0 12px; }
 @media(max-width: 480px) { .account .privacy { display: none; } .link-row { flex-wrap: wrap; } }
+.rubric-help { margin: 0 0 14px; font-size: 14px; }
+.rubric-help code { overflow-wrap: anywhere; }
+.grade-reason { margin-top: 5px; }
